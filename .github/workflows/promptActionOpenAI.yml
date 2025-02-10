@@ -1,0 +1,36 @@
+name: LLM Editor
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  llm_editor_job:
+    # Only run if the label attached is "prompt"
+    if: ${{ github.event.label.name == 'prompt' }}
+    runs-on: ubuntu-latest
+
+    # Concurrency prevents race conditions by grouping workflow runs together.
+    concurrency:
+      group: LLM-Editor-${{ github.repository }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Run LLM Editor Script
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python llm_editor.py
