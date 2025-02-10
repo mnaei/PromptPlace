@@ -4,6 +4,10 @@ on:
   issues:
     types: [labeled]
 
+permissions:
+  issues: write
+  contents: write
+  
 jobs:
   llm_editor_job:
     # Only run if the label attached is "prompt"
