@@ -1,0 +1,45 @@
+name: LLM Webpage Editor
+
+on:
+  issues:
+    types: [opened, labeled]
+    labels:
+      - prompt
+
+concurrency:
+  group: edit-index-html
+  cancel-in-progress: false
+
+jobs:
+  llm_edit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          pip install requests google-generativeai GitPython
+
+      - name: Get issue body
+        id: issue_body
+        run: |
+          ISSUE_BODY=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" ${{ github.event.issue.url }} | jq -r '.body')
+          echo "ISSUE_BODY=$(echo "$ISSUE_BODY" | jq -sRr @uri)" >> "$GITHUB_ENV"
+          echo "ISSUE_NUMBER=${{ github.event.issue.number }}" >> "$GITHUB_ENV"
+          echo "GITHUB_REPOSITORY=${{ github.repository }}" >> "$GITHUB_ENV"
+
+
+      - name: Run LLM editor script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ISSUE_BODY: ${{ env.ISSUE_BODY }}
+          ISSUE_NUMBER: ${{ env.ISSUE_NUMBER }}
+          GITHUB_REPOSITORY: ${{ env.GITHUB_REPOSITORY }}
+        run: python llm_editor.py
