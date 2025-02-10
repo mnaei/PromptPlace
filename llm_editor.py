@@ -49,42 +49,48 @@ def main():
         with open(index_path, "r", encoding="utf-8") as f:
             current_html = f.read()
 
-        # Build the prompt for the LLM
-        prompt = (
-            "You are an expert front-end developer.\n\n"
-            "Below is the current HTML of the page:\n"
-            "---------------------\n"
-            f"{current_html}\n"
-            "---------------------\n\n"
-            "Apply the following modifications as specified by the user. "
-            "Return only the modified HTML code (including any necessary CSS/JS) "
-            "and nothing else.\n\n"
-            "User instructions:\n"
-            f"{issue_body}\n"
-        )
-        logging.info("Constructed prompt for OpenAI API.")
+        # Build the prompt messages for the LLM (using Chat Completions structure)
+        system_message = {
+            "role": "system",
+            "content": "You are an expert front-end developer."
+        }
+        user_message = {
+            "role": "user",
+            "content": (
+                "Below is the current HTML of the page:\n"
+                "---------------------\n"
+                f"{current_html}\n"
+                "---------------------\n\n"
+                "Apply the following modifications as specified by the user. "
+                "Return only the modified HTML code (including any necessary CSS/JS) and nothing else.\n\n"
+                "User instructions:\n"
+                f"{issue_body}"
+            )
+        }
+        messages = [system_message, user_message]
+        logging.info("Constructed messages for OpenAI o3-mini API.")
 
-        # Call the OpenAI API
+        # Call the OpenAI API using the latest o3-mini model via Chat Completions
         openai_api_key = os.environ.get("OPENAI_API_KEY")
         if not openai_api_key:
             logging.error("OPENAI_API_KEY environment variable not set.")
             sys.exit(1)
 
-        openai_url = "https://api.openai.com/v1/completions"
+        # Use the Chat Completions endpoint and set the model to o3-mini.
+        openai_url = "https://api.openai.com/v1/chat/completions"
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {openai_api_key}"
         }
-        # Adjust the parameters as needed – here we use text-davinci-003
         data = {
-            "model": "text-davinci-003",
-            "prompt": prompt,
+            "model": "o3-mini",
+            "messages": messages,
             "max_tokens": 1500,
             "temperature": 0.3,
             "n": 1,
-            "stop": None
+            "reasoning_effort": "medium"  # Options: "low", "medium", or "high"
         }
-        logging.info("Sending request to OpenAI API...")
+        logging.info("Sending request to OpenAI o3-mini API...")
         response = requests.post(openai_url, headers=headers, json=data)
         if response.status_code != 200:
             error_msg = f"OpenAI API error ({response.status_code}): {response.text}"
@@ -99,7 +105,8 @@ def main():
             logging.error(error_msg)
             post_issue_comment(issue_number, error_msg)
             sys.exit(1)
-        llm_output = choices[0].get("text", "")
+        # For Chat Completions the content is in choices[0].message.content
+        llm_output = choices[0].get("message", {}).get("content", "")
         logging.info("Received response from OpenAI API.")
 
         # Use BeautifulSoup to parse and pretty-print any HTML in the response.
