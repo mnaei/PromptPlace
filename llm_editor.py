@@ -50,10 +50,7 @@ def main():
             current_html = f.read()
 
         # Build the prompt messages for the LLM (using Chat Completions structure)
-        system_message = {
-            "role": "system",
-            "content": "You are an expert front-end developer."
-        }
+
         user_message = {
             "role": "user",
             "content": (
@@ -67,30 +64,26 @@ def main():
                 f"{issue_body}"
             )
         }
-        messages = [system_message, user_message]
-        logging.info("Constructed messages for OpenAI o3-mini API.")
+        messages = [user_message]
+        logging.info("Constructed messages for OpenAI o1-mini API.")
 
-        # Call the OpenAI API using the latest o3-mini model via Chat Completions
+        # Call the OpenAI API using the latest o1-mini model via Chat Completions
         openai_api_key = os.environ.get("OPENAI_API_KEY")
         if not openai_api_key:
             logging.error("OPENAI_API_KEY environment variable not set.")
             sys.exit(1)
 
-        # Use the Chat Completions endpoint and set the model to o3-mini.
+        # Use the Chat Completions endpoint and set the model to o1-mini.
         openai_url = "https://api.openai.com/v1/chat/completions"
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {openai_api_key}"
         }
         data = {
-            "model": "o3-mini",
+            "model": "o1-mini",
             "messages": messages,
-            "max_tokens": 1500,
-            "temperature": 0.3,
-            "n": 1,
-            "reasoning_effort": "medium"  # Options: "low", "medium", or "high"
         }
-        logging.info("Sending request to OpenAI o3-mini API...")
+        logging.info("Sending request to OpenAI o1-mini API...")
         response = requests.post(openai_url, headers=headers, json=data)
         if response.status_code != 200:
             error_msg = f"OpenAI API error ({response.status_code}): {response.text}"
