@@ -1,6 +1,10 @@
-# LLM Editor
+# LLM Place
 
-LLM Editor is an automated system that enables users to modify a webpage's `index.html` file hosted on GitHub by submitting natural language change requests. Using GitHub Issues with a `prompt` label, users can describe the desired modifications, and the system will automatically update the webpage based on those instructions.
+LLM Place enables any github user to modify `index.html` by submitting a natural language change requests. 
+
+Create an issues with a `prompt` label, and describe the desired modifications in the body. The system will automatically update the webpage based on the instructions.
+
+The webpage index.html is hosted at https://mnaei.github.io/LLMPlace/
 
 ## How It Works
 
@@ -25,19 +29,3 @@ LLM Editor is an automated system that enables users to modify a webpage's `inde
 4. **Error Handling & Concurrency**  
    - **Robust Error Handling**: The script handles API errors, commit failures, and other potential issues gracefully.
    - **Concurrency Control**: The GitHub Actions workflow leverages concurrency features to prevent race conditions when multiple issues are processed simultaneously.
-
-## Getting Started
-
-### Prerequisites
-
-- **Python 3.x**: Ensure Python is installed on your GitHub Actions runner.
-- **GitHub Actions**: The automation is built on GitHub Actions.
-- **OpenAI API Key**: Required for interacting with the OpenAI API. Add your API key as a repository secret named `OPENAI_API_KEY`.
-- **GitHub Token**: The `GITHUB_TOKEN` provided by GitHub Actions is used to commit changes and post comments.
-
-### Installation
-
-1. **Clone the Repository**  
-   ```bash
-   git clone https://github.com/yourusername/llm-editor.git
-   cd llm-editor
