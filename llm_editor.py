@@ -104,12 +104,13 @@ def main():
 
         # Use BeautifulSoup to parse and pretty-print any HTML in the response.
         soup = BeautifulSoup(llm_output, "html.parser")
-        new_html = soup.prettify()
-        if not new_html.strip():
-            error_msg = "Failed to extract valid HTML from the OpenAI response."
+        html_tag = soup.find("html")
+        if not html_tag:
+            error_msg = "No <html> tag found in the OpenAI response."
             logging.error(error_msg)
             post_issue_comment(issue_number, error_msg)
             sys.exit(1)
+        new_html = html_tag.prettify()
 
         # Compute a unified diff between the current HTML and the new HTML.
         diff = "".join(difflib.unified_diff(
