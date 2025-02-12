@@ -5,7 +5,6 @@ import json
 import logging
 import requests
 import subprocess
-import difflib
 
 from bs4 import BeautifulSoup
 
@@ -112,14 +111,6 @@ def main():
             sys.exit(1)
         new_html = html_tag.prettify()
 
-        # Compute a unified diff between the current HTML and the new HTML.
-        diff = "".join(difflib.unified_diff(
-            current_html.splitlines(keepends=True),
-            new_html.splitlines(keepends=True),
-            fromfile="index.html (old)",
-            tofile="index.html (new)"
-        ))
-
         # Write the new HTML back to index.html.
         with open(index_path, "w", encoding="utf-8") as f:
             f.write(new_html)
@@ -154,9 +145,8 @@ def main():
 
         # Prepare and post a comment on the issue with the commit link and diff.
         comment_body = (
-            f"**index.html updated!**\n\n"
+            "**index.html updated!**\n\n"
             f"Commit: [{commit_hash}]({commit_url})\n\n"
-            "```diff\n" + diff + "\n```"
         )
         post_issue_comment(issue_number, comment_body)
         logging.info(f"Comment posted on issue #{issue_number}.")
