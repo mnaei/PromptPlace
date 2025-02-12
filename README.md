@@ -1,10 +1,12 @@
-# LLM Place
+# Prompt Place
 
-LLM Place enables any github user to modify `index.html` by submitting a natural language change requests. 
+Inspired by reddit [r/place](https://www.reddit.com/r/place/)
 
-Create an issues with a `prompt` label, and describe the desired modifications in the body. The system will automatically update the webpage based on the instructions.
+Prompt Place enables any github user to modify `index.html` by submitting a natural language change requests. 
 
-The webpage index.html is hosted at https://mnaei.github.io/LLMPlace/
+Create an [issue](https://github.com/mnaei/PromptPlace/issues/new) with the label `prompt`, and describe the desired modification instructions in the issue body. An LLM will automatically update the webpage based on your instructions.
+
+The webpage index.html is hosted at https://mnaei.github.io/PrmoptPlace/
 
 ## How It Works
 
@@ -26,6 +28,5 @@ The webpage index.html is hosted at https://mnaei.github.io/LLMPlace/
    - **Commit Changes**: Commits the updated `index.html` directly to the `main` branch.
    - **Comment on Issue**: Posts a comment on the issue containing a link to the commit and a diff of the changes.
 
-4. **Error Handling & Concurrency**  
-   - **Robust Error Handling**: The script handles API errors, commit failures, and other potential issues gracefully.
-   - **Concurrency Control**: The GitHub Actions workflow leverages concurrency features to prevent race conditions when multiple issues are processed simultaneously.
+4. **Concurrency Control**  
+   The GitHub Actions workflow leverages the concurrency features to prevent merge conflict.
