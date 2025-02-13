@@ -72,7 +72,14 @@ def main():
         # Start a chat session with the Gemini API and send the prompt
         chat = client.chats.create(model='gemini-2.0-flash')
         logging.info("Starting chat session with Gemini API.")
-        response = chat.send_message(message=prompt)
+
+        try:
+            response = chat.send_message(message=prompt)
+        except Exception as e:
+            logging.error(f"Gemini API Error {e}") 
+            post_issue_comment(issue_number, error_msg)
+            sys.exit(1)
+            
         logging.info("Received response from Gemini API.")
 
         llm_output = response.text
