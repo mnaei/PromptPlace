@@ -8,17 +8,14 @@ The webpage `index.html` is hosted at https://mnaei.github.io/PromptPlace/
 
 ## How It Works
 
-1. **Issue Submission**  
-   Users submit a GitHub issue with the label `prompt` which includes natural language instructions in the issue body.
+1. **Issue Submission**: Users submit a GitHub issue with the label `prompt` which includes natural language instructions in the issue body.
 
-2. **Triggering the Workflow**  
-   A GitHub Actions workflow (`.github/workflows/llm-editor.yml`) is triggered by the labeled issue. This workflow:
+2. **Triggering the Workflow**: A GitHub Actions workflow (`.github/workflows/llm-editor.yml`) is triggered by the labeled issue. This workflow:
    - Checks out the repository.
    - Sets up the Python environment.
    - Runs the `llm_editor.py` script.
 
-3. **Processing the Request**  
-   The `llm_editor.py` script performs the following:
+3. **Processing the Request**: The `llm_editor.py` script performs the following:
    - **Fetch Current HTML**: Retrieves the current `index.html` file from the repository.
    - **Construct Prompt**: Combines the current HTML with the natural language instructions provided in the issue.
    - **Call Gemini API**: Sends the prompt to the Gemini API to generate updated HTML/CSS/JS code.
@@ -26,8 +23,7 @@ The webpage `index.html` is hosted at https://mnaei.github.io/PromptPlace/
    - **Commit Changes**: Commits the updated `index.html` directly to the `main` branch.
    - **Comment on Issue**: Posts a comment on the issue containing a link to the commit.
 
-4. **Concurrency Control**  
-   The GitHub Actions workflow leverages the concurrency features to prevent merge conflict.
+4. **Concurrency Control**: The GitHub Actions workflow leverages the concurrency features to prevent merge conflict.
 
 ## LLM
 
