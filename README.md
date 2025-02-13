@@ -4,7 +4,7 @@ Inspired by reddit [r/place](https://www.reddit.com/r/place/) Prompt Place enabl
 
 Create an [issue](https://github.com/mnaei/PromptPlace/issues/new) with the label `prompt`, and describe the desired modification instructions in the issue body. An LLM will automatically update the webpage based on your instructions.
 
-The webpage `index.html` is hosted at https://mnaei.github.io/PrmoptPlace/
+The webpage `index.html` is hosted at https://mnaei.github.io/PromptPlace/
 
 ## How It Works
 
