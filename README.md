@@ -2,14 +2,14 @@
 
 Inspired by reddit [r/place](https://www.reddit.com/r/place/) Prompt Place enables any github user to modify `index.html` by submitting a natural language change requests. 
 
-Create an [issue](https://github.com/mnaei/PromptPlace/issues/new) with the label `prompt`, and describe the desired modification instructions in the issue body. An LLM will automatically update the webpage based on your instructions.
+Create an [issue with the Prompt template](https://github.com/mnaei/PromptPlace/issues/new?template=prompt.md) and describe the desired modification instructions in the issue body. An LLM will automatically update the webpage based on your instructions.
 
 The webpage `index.html` is hosted at https://mnaei.github.io/PromptPlace/
 
 ## How It Works
 
 1. **Issue Submission**  
-   Users submit a GitHub Issue labeled `prompt` with natural language instructions in the issue body.
+   Users submit a GitHub Issue tempalte with the labele `prompt` which includes natural language instructions in the issue body.
 
 2. **Triggering the Workflow**  
    A GitHub Actions workflow (`.github/workflows/llm-editor.yml`) is triggered by the labeled issue. This workflow:
@@ -28,3 +28,10 @@ The webpage `index.html` is hosted at https://mnaei.github.io/PromptPlace/
 
 4. **Concurrency Control**  
    The GitHub Actions workflow leverages the concurrency features to prevent merge conflict.
+
+## LLM
+
+Uses Gemini 2.0 Flash which is rate limited to 15 Request Per Minute. 
+
+
+
