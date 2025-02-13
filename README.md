@@ -9,7 +9,7 @@ The webpage `index.html` is hosted at https://mnaei.github.io/PromptPlace/
 ## How It Works
 
 1. **Issue Submission**  
-   Users submit a GitHub Issue template with the labele `prompt` which includes natural language instructions in the issue body.
+   Users submit a GitHub issue with the label `prompt` which includes natural language instructions in the issue body.
 
 2. **Triggering the Workflow**  
    A GitHub Actions workflow (`.github/workflows/llm-editor.yml`) is triggered by the labeled issue. This workflow:
