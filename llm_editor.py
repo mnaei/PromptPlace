@@ -3,10 +3,10 @@ import os
 import sys
 import json
 import logging
-import requests
 import subprocess
-
 from bs4 import BeautifulSoup
+from google import genai
+
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -48,64 +48,40 @@ def main():
         with open(index_path, "r", encoding="utf-8") as f:
             current_html = f.read()
 
-        # Build the prompt messages for the LLM (using Chat Completions structure)
+        # Build the prompt for the Gemini API
+        prompt = (
+            "Below is the current HTML of the page:\n"
+            "---------------------\n"
+            f"{current_html}\n"
+            "---------------------\n\n"
+            "Apply the following modifications as specified by the user. "
+            "Return only the modified HTML code (including any necessary CSS/JS) and nothing else.\n\n"
+            "User instructions:\n"
+            f"{issue_body}"
+        )
+        logging.info("Constructed prompt for Gemini API.")
 
-        user_message = {
-            "role": "user",
-            "content": (
-                "Below is the current HTML of the page:\n"
-                "---------------------\n"
-                f"{current_html}\n"
-                "---------------------\n\n"
-                "Apply the following modifications as specified by the user. "
-                "Return only the modified HTML code (including any necessary CSS/JS) and nothing else.\n\n"
-                "User instructions:\n"
-                f"{issue_body}"
-            )
-        }
-        messages = [user_message]
-        logging.info("Constructed messages for OpenAI o1-mini API.")
-
-        # Call the OpenAI API using the latest o1-mini model via Chat Completions
-        openai_api_key = os.environ.get("OPENAI_API_KEY")
-        if not openai_api_key:
-            logging.error("OPENAI_API_KEY environment variable not set.")
+        # Create the Gemini client using your GEMINI_API_KEY
+        gemini_api_key = os.environ.get("GEMINI_API_KEY")
+        if not gemini_api_key:
+            logging.error("GEMINI_API_KEY environment variable not set.")
             sys.exit(1)
+        client = genai.Client(api_key=gemini_api_key)
+        logging.info("Created Gemini API client.")
 
-        # Use the Chat Completions endpoint and set the model to o1-mini.
-        openai_url = "https://api.openai.com/v1/chat/completions"
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {openai_api_key}"
-        }
-        data = {
-            "model": "o1-mini",
-            "messages": messages,
-        }
-        logging.info("Sending request to OpenAI o1-mini API...")
-        response = requests.post(openai_url, headers=headers, json=data)
-        if response.status_code != 200:
-            error_msg = f"OpenAI API error ({response.status_code}): {response.text}"
-            logging.error(error_msg)
-            post_issue_comment(issue_number, error_msg)
-            sys.exit(1)
+        # Start a chat session with the Gemini API and send the prompt
+        chat = client.chats.create(model='gemini-2.0-flash')
+        logging.info("Starting chat session with Gemini API.")
+        response = chat.send_message(message=prompt)
+        logging.info("Received response from Gemini API.")
 
-        result = response.json()
-        choices = result.get("choices")
-        if not choices or len(choices) == 0:
-            error_msg = "OpenAI API returned no completion choices."
-            logging.error(error_msg)
-            post_issue_comment(issue_number, error_msg)
-            sys.exit(1)
-        # For Chat Completions the content is in choices[0].message.content
-        llm_output = choices[0].get("message", {}).get("content", "")
-        logging.info("Received response from OpenAI API.")
+        llm_output = response.text
 
         # Use BeautifulSoup to parse and pretty-print any HTML in the response.
         soup = BeautifulSoup(llm_output, "html.parser")
         html_tag = soup.find("html")
         if not html_tag:
-            error_msg = "No <html> tag found in the OpenAI response."
+            error_msg = "No <html> tag found in the Gemini API response."
             logging.error(error_msg)
             post_issue_comment(issue_number, error_msg)
             sys.exit(1)
@@ -165,6 +141,7 @@ def post_issue_comment(issue_number, body):
     Post a comment on the GitHub issue using the GitHub API.
     Requires the GITHUB_TOKEN and GITHUB_REPOSITORY environment variables.
     """
+    import requests  # Imported here to limit its scope if needed
     github_token = os.environ.get("GITHUB_TOKEN")
     repo_full = os.environ.get("GITHUB_REPOSITORY")
     if not github_token or not repo_full:
