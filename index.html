@@ -1,37 +1,195 @@
 <html>
  <head>
   <title>
-   My Cool Website
+   Luxury Timepieces
   </title>
   <style>
    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      font-family: 'Arial', sans-serif;
       margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    header {
+      background-color: #222;
+      color: #fff;
+      padding: 20px 0;
       text-align: center;
     }
-    button {
-      background-color: blue;
-      color: white;
+
+    nav {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 0;
+      text-align: center;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      display: inline-block;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .product {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .product img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .product h3 {
+      margin-top: 0;
+      font-size: 1.2em;
+    }
+
+    .product p {
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    .product .price {
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+    .product button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+
+    footer {
+      background-color: #222;
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      nav a {
+        display: block;
+        padding: 10px;
+      }
+
+      .product-grid {
+        grid-template-columns: 1fr; /* Stack on smaller screens */
+      }
     }
   </style>
  </head>
  <body>
-  <h1>
-   Welcome to my website! ⭐️
-  </h1>
-  <p>
-   How was your day? 🎉
-  </p>
-  <button onclick="alert('Surprise!')">
-   Click Me
-  </button>
-  <img alt="Cute tiny gray cat eating a red apple" src="https://i.imgur.com/example.png"/>
-  <p>
-   there is a cute tiny cat gray eating a red apple
-  </p>
+  <header>
+   <h1>
+    Luxury Timepieces
+   </h1>
+  </header>
+  <nav>
+   <a href="#">
+    Home
+   </a>
+   <a href="#">
+    Shop
+   </a>
+   <a href="#">
+    About Us
+   </a>
+   <a href="#">
+    Contact
+   </a>
+  </nav>
+  <section class="product-grid">
+   <div class="product">
+    <img alt="Luxury Watch 1" src="https://via.placeholder.com/300x200?text=Watch+1"/>
+    <h3>
+     Elegant Chronograph
+    </h3>
+    <p>
+     A classic timepiece with intricate details.
+    </p>
+    <p class="price">
+     $1,200
+    </p>
+    <button>
+     Add to Cart
+    </button>
+   </div>
+   <div class="product">
+    <img alt="Luxury Watch 2" src="https://via.placeholder.com/300x200?text=Watch+2"/>
+    <h3>
+     Sport Automatic
+    </h3>
+    <p>
+     Durable and stylish for the modern adventurer.
+    </p>
+    <p class="price">
+     $950
+    </p>
+    <button>
+     Add to Cart
+    </button>
+   </div>
+   <div class="product">
+    <img alt="Luxury Watch 3" src="https://via.placeholder.com/300x200?text=Watch+3"/>
+    <h3>
+     Minimalist Dress Watch
+    </h3>
+    <p>
+     Sleek and sophisticated for any occasion.
+    </p>
+    <p class="price">
+     $780
+    </p>
+    <button>
+     Add to Cart
+    </button>
+   </div>
+   <div class="product">
+    <img alt="Luxury Watch 4" src="https://via.placeholder.com/300x200?text=Watch+4"/>
+    <h3>
+     Diving Watch
+    </h3>
+    <p>
+     Water resistant watch with illuminated display.
+    </p>
+    <p class="price">
+     $1,550
+    </p>
+    <button>
+     Add to Cart
+    </button>
+   </div>
+  </section>
+  <footer>
+   <p>
+    © 2024 Luxury Timepieces
+   </p>
+  </footer>
  </body>
 </html>
