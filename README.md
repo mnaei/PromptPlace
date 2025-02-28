@@ -2,7 +2,7 @@
 
 Inspired by reddit [r/place](https://www.reddit.com/r/place/) Prompt Place enables any github user to modify `index.html` by submitting a natural language change requests. 
 
-Create an [issue with the Prompt template](https://github.com/mnaei/PromptPlace/issues/new?template=prompt.md) and outline instructions for the desired modification in the issue body. An LLM will automatically update the webpage based on your instructions.
+Start by [clicking here to create an issue with the Prompt template](https://github.com/mnaei/PromptPlace/issues/new?template=prompt.md) and outline instructions for the desired modification in the issue body. An LLM will automatically update the webpage based on your instructions.
 
 The webpage `index.html` is hosted at https://mnaei.github.io/PromptPlace/
 
