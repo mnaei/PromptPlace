@@ -17,6 +17,7 @@
       color: #fff;
       padding: 20px 0;
       text-align: center;
+	  position: relative;
     }
 
     nav {
@@ -102,6 +103,88 @@
         grid-template-columns: 1fr; /* Stack on smaller screens */
       }
     }
+
+	#cart-icon {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 24px;
+		color: #fff;
+		cursor: pointer;
+	}
+
+	#cart-count {
+		position: absolute;
+		top: 5px;
+		right: 0px;
+		background-color: red;
+		color: white;
+		border-radius: 50%;
+		padding: 4px 8px;
+		font-size: 12px;
+	}
+
+	/* Cart Modal Styles */
+	.cart-modal {
+		display: none; /* Hidden by default */
+		position: fixed; /* Stay in place */
+		z-index: 1; /* Sit on top */
+		left: 0;
+		top: 0;
+		width: 100%; /* Full width */
+		height: 100%; /* Full height */
+		overflow: auto; /* Enable scroll if needed */
+		background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	}
+
+	/* Modal Content/Box */
+	.cart-modal-content {
+		background-color: #fefefe;
+		margin: 15% auto; /* 15% from the top and centered */
+		padding: 20px;
+		border: 1px solid #888;
+		width: 80%; /* Could be more or less, depending on screen size */
+		position: relative;
+	}
+
+	/* The Close Button */
+	.close {
+		position: absolute;
+		top: 0;
+		right: 0;
+		color: #aaa;
+		font-size: 28px;
+		font-weight: bold;
+		padding: 10px;
+	}
+
+	.close:hover,
+	.close:focus {
+		color: black;
+		text-decoration: none;
+		cursor: pointer;
+	}
+
+	/* Cart Items Styles */
+	.cart-items {
+		list-style-type: none;
+		padding: 0;
+	}
+
+	.cart-items li {
+		padding: 10px 0;
+		border-bottom: 1px solid #eee;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.cart-total {
+		margin-top: 20px;
+		font-size: 1.2em;
+		font-weight: bold;
+		text-align: right;
+	}
   </style>
  </head>
  <body>
@@ -109,6 +192,13 @@
    <h1>
     Luxury Timepieces
    </h1>
+   <div id="cart-icon">
+    <i class="fa fa-shopping-cart">
+    </i>
+    <span id="cart-count">
+     0
+    </span>
+   </div>
   </header>
   <nav>
    <a href="#">
@@ -136,7 +226,7 @@
     <p class="price">
      $1,200
     </p>
-    <button>
+    <button data-image="https://via.placeholder.com/300x200?text=Watch+1" data-name="Elegant Chronograph" data-price="1200">
      Add to Cart
     </button>
    </div>
@@ -151,7 +241,7 @@
     <p class="price">
      $950
     </p>
-    <button>
+    <button data-image="https://via.placeholder.com/300x200?text=Watch+2" data-name="Sport Automatic" data-price="950">
      Add to Cart
     </button>
    </div>
@@ -166,7 +256,7 @@
     <p class="price">
      $780
     </p>
-    <button>
+    <button data-image="https://via.placeholder.com/300x200?text=Watch+3" data-name="Minimalist Dress Watch" data-price="780">
      Add to Cart
     </button>
    </div>
@@ -181,7 +271,7 @@
     <p class="price">
      $1,550
     </p>
-    <button>
+    <button data-image="https://via.placeholder.com/300x200?text=Watch+4" data-name="Diving Watch" data-price="1550">
      Add to Cart
     </button>
    </div>
@@ -191,5 +281,120 @@
     © 2024 Luxury Timepieces
    </p>
   </footer>
+  <!-- Cart Modal -->
+  <div class="cart-modal" id="cartModal">
+   <div class="cart-modal-content">
+    <span class="close">
+     ×
+    </span>
+    <h2>
+     Shopping Cart
+    </h2>
+    <ul class="cart-items">
+     <!-- Cart items will be dynamically added here -->
+    </ul>
+    <div class="cart-total">
+     Total: $
+     <span id="cart-total-price">
+      0.00
+     </span>
+    </div>
+    <button>
+     Checkout
+    </button>
+   </div>
+  </div>
+  <link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" referrerpolicy="no-referrer" rel="stylesheet"/>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+		const cartIcon = document.getElementById('cart-icon');
+		const cartModal = document.getElementById('cartModal');
+		const closeModal = document.querySelector('.close');
+		const cartItemsList = document.querySelector('.cart-items');
+		const cartTotalPrice = document.getElementById('cart-total-price');
+		const addToCartButtons = document.querySelectorAll('.product button');
+		const cartCount = document.getElementById('cart-count');
+
+		let cart = [];
+
+		// Function to update the cart count badge
+		function updateCartCount() {
+			cartCount.textContent = cart.length;
+		}
+
+		// Function to open the cart modal
+		cartIcon.addEventListener('click', function() {
+			cartModal.style.display = "block";
+			renderCart(); // Render the cart when it's opened
+		});
+
+		// Function to close the cart modal
+		closeModal.addEventListener('click', function() {
+			cartModal.style.display = "none";
+		});
+
+		// Close the modal when clicking outside of it
+		window.addEventListener('click', function(event) {
+			if (event.target == cartModal) {
+				cartModal.style.display = "none";
+			}
+		});
+
+		// Function to add item to cart
+		addToCartButtons.forEach(button => {
+			button.addEventListener('click', function() {
+				const itemName = this.dataset.name;
+				const itemPrice = parseFloat(this.dataset.price);
+				const itemImage = this.dataset.image;
+
+				const item = {
+					name: itemName,
+					price: itemPrice,
+					image: itemImage,
+					quantity: 1
+				};
+
+				//Check if item already exists
+				const itemInCart = cart.find( (item) => item.name === itemName );
+
+				if (itemInCart) {
+					itemInCart.quantity++;
+				} else {
+					cart.push(item);
+				}
+
+				updateCartCount();
+				renderCart();
+
+			});
+		});
+
+		// Function to render cart items in the modal
+		function renderCart() {
+			cartItemsList.innerHTML = ''; // Clear existing items
+			let total = 0;
+
+			cart.forEach(item => {
+				const listItem = document.createElement('li');
+				listItem.innerHTML = `
+					<img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px; margin-right: 10px;">
+					<span>${item.name} - $${item.price} x ${item.quantity}</span>
+					<button onclick="removeItem('${item.name}')">Remove</button>
+				`;
+				cartItemsList.appendChild(listItem);
+				total += item.price * item.quantity;
+			});
+
+			cartTotalPrice.textContent = total.toFixed(2);
+		}
+
+		// Make removeItem function globally available
+		window.removeItem = function(itemName) {
+			cart = cart.filter(item => item.name !== itemName);
+			updateCartCount();
+			renderCart();
+		}
+	});
+  </script>
  </body>
 </html>
