@@ -73,6 +73,8 @@ def main():
         chat = client.chats.create(model='gemini-2.0-flash')
         logging.info("Starting chat session with Gemini API.")
 
+        post_issue_comment(issue_number, "Github Action has received your prompt!")
+
         try:
             response = chat.send_message(message=prompt)
         except Exception as e:
